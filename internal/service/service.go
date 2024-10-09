@@ -24,13 +24,13 @@ type SpectralData struct {
 }
 
 func (s *AnalyzerService) AnalyzeImage(url string) (*AnalysisResult, error) {
-	// 1. Загрузка изображения
+	// 1. Hochladen eines Bildes
 	img, err := s.downloadImage(url)
 	if err != nil {
 		return nil, err
 	}
 
-	// 2. Анализ (заглушки для методов)
+	// 2. Analyse (Stopfen für Methoden)
 	dominantColor := s.findDominantColor(img)
 	spectrum := s.createSpectrum(img)
 	brightnessMap := s.createBrightnessMap(img)
@@ -57,18 +57,17 @@ func (s *AnalyzerService) downloadImage(url string) (image.Image, error) {
 	return img, nil
 }
 
-// Заглушки для методов анализа
 func (s *AnalyzerService) findDominantColor(img image.Image) string {
-	// TODO: Реализовать поиск доминирующего цвета
+	// TODO: Durchführung der Suche nach der dominanten Farbe
 	return "#000000"
 }
 
 func (s *AnalyzerService) createSpectrum(img image.Image) []SpectralData {
-	// TODO: Реализовать создание спектрограммы
+	// TODO: Die Erstellung eines Spektrogramms realisieren
 	return []SpectralData{}
 }
 
 func (s *AnalyzerService) createBrightnessMap(img image.Image) string {
-	// TODO: Реализовать создание карты яркости
+	// TODO: Implementierung der Erstellung einer Helligkeitskarte
 	return ""
 }

@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"spectrogram-app/internal/service"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
@@ -58,6 +59,6 @@ func (h *Handler) analyzeBatch(c *gin.Context) {
 		return
 	}
 
-	// TODO: Реализовать пакетный анализ
+	// TODO: Implementierung der Batch-Analyse
 	c.JSON(http.StatusOK, gin.H{"status": "not implemented"})
 }
