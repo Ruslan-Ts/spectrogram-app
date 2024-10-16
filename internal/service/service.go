@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/jpeg"
 	"net/http"
+	"spectrogram-app/internal/analyzer"
 )
 
 type AnalyzerService struct{}
@@ -30,10 +31,13 @@ func (s *AnalyzerService) AnalyzeImage(url string) (*AnalysisResult, error) {
 		return nil, err
 	}
 
-	// 2. Analyse (Stopfen für Methoden)
+	// 2. Analyse (Stopfen für Methoden, außer für die Helligkeitskarte)
 	dominantColor := s.findDominantColor(img)
 	spectrum := s.createSpectrum(img)
-	brightnessMap := s.createBrightnessMap(img)
+	brightnessMap, err := analyzer.CreateBrightnessMap(img)
+	if err != nil {
+		return nil, err
+	}
 
 	return &AnalysisResult{
 		DominantColor: dominantColor,
