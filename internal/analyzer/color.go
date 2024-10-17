@@ -1,6 +1,5 @@
-package main
+package analyzer
 
-//später ändern zum Testen aber main erstmal
 import (
 	"fmt"
 	"image"
