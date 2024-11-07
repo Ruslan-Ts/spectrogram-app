@@ -5,28 +5,43 @@ import (
 	"image"
 	"image/color"
 	"image/jpeg"
+	"io"
 	"log"
 	"math"
 	"os"
+	"time"
 
 	"github.com/mjibson/go-dsp/fft"
 )
 
-// NEEDS TESTING
+// tested by coping contents into main, how can I solve this without doing that step?
+//testing did not work
+
 func spektogram() {
-	// Step 1: Load and convert the image to greyscale
-	file, err := os.Open("input.jpg")
+
+	//Load the image -> use function that is also used in color.go = maybe put it into a service?
+	file, err := os.Open("cmd/tomie.jpg")
 	if err != nil {
 		log.Fatalf("failed to open image: %v", err)
 	}
 	defer file.Close()
 
-	img, _, err := image.Decode(file)
+	_, err = jpeg.DecodeConfig(file)
 	if err != nil {
 		log.Fatalf("failed to decode image: %v", err)
 	}
 
-	// Convert to greyscale
+	file.Seek(0, io.SeekStart)
+
+	img, format, err := image.Decode(file)
+	log.Printf("Image format: %s\n", format)
+	if err != nil {
+		log.Fatalf("failed to decode image: %v", err)
+	}
+
+	start := time.Now()
+
+	//Turn the image into a greyscale version of it by setting every single pixel in a grey version
 	greyImg := image.NewGray(img.Bounds())
 	for y := 0; y < img.Bounds().Dy(); y++ {
 		for x := 0; x < img.Bounds().Dx(); x++ {
@@ -35,7 +50,13 @@ func spektogram() {
 		}
 	}
 
-	// Save greyscale image
+	//	r := new(big.Int)
+	//	fmt.Println(r.Binomial(1000, 10))
+
+	elapsed := time.Since(start)
+	log.Printf("Greyscale took %d", elapsed.Milliseconds())
+
+	//save the image in the folder that spektogram.go is -> move it somewhere else later
 	outFile, err := os.Create("greyscale.jpg")
 	if err != nil {
 		log.Fatalf("failed to create output file: %v", err)
@@ -46,7 +67,7 @@ func spektogram() {
 		log.Fatalf("failed to save greyscale image: %v", err)
 	}
 
-	// Step 2: Apply 2D FFT
+	//set the 2d FTT
 	bounds := greyImg.Bounds()
 	width, height := bounds.Dx(), bounds.Dy()
 	data := make([][]float64, height)
@@ -57,7 +78,7 @@ func spektogram() {
 		}
 	}
 
-	// Perform FFT row by row and column by column
+	//use the FTT on every single pixel
 	for y := 0; y < height; y++ {
 		row := make([]complex128, width)
 		for x := 0; x < width; x++ {
@@ -80,14 +101,14 @@ func spektogram() {
 		}
 	}
 
-	// Save FFT magnitude visualization
+	//save FFT magnitude visualization in the folder that spektogram.go is -> move it somewhere else later
 	outFFTFile, err := os.Create("fft_visualization.jpg")
 	if err != nil {
 		log.Fatalf("failed to create FFT output file: %v", err)
 	}
 	defer outFFTFile.Close()
 
-	// Visualize the FFT magnitude as a grayscale image
+	//the fft magintude is being set into a greyscale
 	fftImg := image.NewGray(bounds)
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
